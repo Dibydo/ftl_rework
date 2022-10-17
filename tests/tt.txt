@@ -1,0 +1,7 @@
+lexicographic
+
+constructors = a(1),b(1),w(2),c(1)
+variables = x
+
+(a(a(b(x))) = c(a(x)))
+(c(b(b(x))) = a(b(a(x))))

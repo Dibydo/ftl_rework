@@ -1,0 +1,7 @@
+lexicographic
+
+constructors = f(1), g(1), h(2), k(1)
+
+variables = x, a, b, y
+
+(k(f(y)) = k(f(f(y))))
