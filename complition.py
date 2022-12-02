@@ -11,12 +11,24 @@ class Catapult(Exception):
 
 
 class Algorithm():
-    def __init__(self, order, rules):
+    def __init__(self, order, rules, constructors):
         if order == 'anti-lexicographic':
             self.order = -1
         else:
             self.order = 1
+        self.constructors = constructors
         self.rules = set(rules)
+
+        for rule in rules:
+            self.check_constructor_conformity(rule.left_term)
+            self.check_constructor_conformity(rule.right_term)
+
+    def check_constructor_conformity(self, term):
+        if self.constructors.get(term.tname) != len(term.targs):
+            raise Catapult("Term", str(term), " doesn't match signature")
+        for arg in term.targs:
+            if arg.ttype == 'constructor':
+                self.check_constructor_conformity(arg)
 
     def start(self):
         try:

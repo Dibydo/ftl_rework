@@ -1,5 +1,6 @@
-from curses import raw
 import re
+
+from models.srs import Srs
 from models.term import Term
 from models.trs import Trs
 
@@ -29,8 +30,10 @@ class Parser():
         self.variables = self.parse_variables(variables_raw)
 
         trs_raw = match.group("trs").replace("\n", " ")
+
         if self.allow_srs:
             trs_raw = self.srs_to_trs(trs_raw)
+            print("максимально важно", trs_raw)
         self.trss = self.parse_trs(trs_raw)
 
     def parse_constructors(self, constructors_raw: str):
@@ -57,7 +60,7 @@ class Parser():
         #     if trs_raw[i] == " ":
         #         trs_raw.remove(" ")
         trs_raw = trs_raw.replace(" ", "")
-        print(trs_raw)
+        # print(trs_raw)
         while trs_raw:
             i = self.get_zero_level_skobka_index(trs_raw)
             trss.append(trs_raw[1:i])
@@ -131,19 +134,13 @@ class Parser():
     def srs_to_trs(self, srs):
         result = ""
         srs = srs.split(" ")
-        srs = list(filter("->".__ne__, srs))
-        if len(srs) % 2 == 1:
+        if len(srs) % 3 != 0:
             srs.append("x")
+        srs_struct_array = []
         for i in range(len(srs)):
-            if srs[i] == "x":
-                continue
-            temp_res = ""
-            for j in range(len(srs[i])):
-                temp_res += srs[i][j] + "("
-            temp_res += "x"
-            for j in range(len(srs[i])):
-                temp_res += ")"
-            srs[i] = temp_res
-        for i in range(int(len(srs)/2)):
-            result += srs[2 * i] + " = " + srs[2 * i + 1] + " "
+            if srs[i] == "->":
+                srs_struct_array.append(Srs(srs[i-1], srs[i+1]))
+        for srs in srs_struct_array:
+            result += srs.to_trs() + " "
+        result = result.strip()
         return result
