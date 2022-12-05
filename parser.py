@@ -1,5 +1,6 @@
 import re
 
+from complition import Catapult
 from models.srs import Srs
 from models.term import Term
 from models.trs import Trs
@@ -23,6 +24,7 @@ class Parser():
 
         constructors_raw = match.group("constructors").replace("\n", "")
         self.constructors = self.parse_constructors(constructors_raw)
+
         if all(value == 1 for value in self.constructors.values()):
             self.allow_srs = True
 
@@ -30,10 +32,11 @@ class Parser():
         self.variables = self.parse_variables(variables_raw)
 
         trs_raw = match.group("trs").replace("\n", " ")
-
+        is_balanced = self.check_brackets_balance(trs_raw)
+        if not is_balanced:
+            raise Catapult("Trs brackets are not balanced")
         if self.allow_srs:
             trs_raw = self.srs_to_trs(trs_raw)
-            print("максимально важно", trs_raw)
         self.trss = self.parse_trs(trs_raw)
 
     def parse_constructors(self, constructors_raw: str):
@@ -144,3 +147,10 @@ class Parser():
             result += srs.to_trs() + " "
         result = result.strip()
         return result
+
+    def check_brackets_balance(self, trs):
+        while True:
+            if '()' in trs:
+                trs = trs.replace('()', '')
+            else:
+                return not trs
