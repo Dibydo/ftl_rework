@@ -11,10 +11,6 @@ if __name__ == '__main__':
     for x in rules:
         print(x)
 
-    # TODO: как пофиксить 2:
-    # из уравнений типа Q lg> P составить граф
-    # удалять все условия, которые описывают не соседей
-
     if order == 'lexicographic' or order == 'anti-lexicographic':
         a = Algorithm(order, rules, constructors)
         a.start()

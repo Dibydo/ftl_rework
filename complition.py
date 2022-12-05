@@ -47,10 +47,18 @@ class Algorithm():
             return
 
         if len(rules) == 0:
+            pairs = []
+            repeat_check = set()
             print("Answer:")
             for v in lex.graph:
                 for u in lex.graph[v]:
-                    print(f"{v} >lg {u}")
+                    pairs.append([v, u])
+                    if v in repeat_check and u in repeat_check:
+                        pairs.remove([v, u])
+                    repeat_check.add(v)
+                    repeat_check.add(u)
+            for pair in pairs:
+                print(f"{pair[0]} >lg {pair[1]}")
             raise Catapult
 
         lex = deepcopy(lex)
