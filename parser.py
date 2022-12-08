@@ -149,6 +149,12 @@ class Parser():
         return result
 
     def check_brackets_balance(self, trs):
+        trs = trs.replace(' ', '')
+        trs = trs.replace('=', '')
+        for constructor in self.constructors:
+            trs = trs.replace(constructor, "")
+        for variable in self.variables:
+            trs = trs.replace(variable, "")
         while True:
             if '()' in trs:
                 trs = trs.replace('()', '')
